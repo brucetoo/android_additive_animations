@@ -1,5 +1,6 @@
 package additive_animations.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
 import android.widget.FrameLayout;
 
 import additive_animations.AdditiveAnimationsShowcaseActivity;
@@ -15,7 +15,7 @@ import at.wirecube.additiveanimations.additive_animator.AdditiveAnimator;
 import at.wirecube.additiveanimations.additiveanimationsdemo.R;
 import at.wirecube.additiveanimations.helper.EaseInOutPathInterpolator;
 
-public class TapToMoveDemoFragment extends Fragment {
+public class TapToMoveDemoFragment extends Fragment implements View.OnTouchListener {
     FrameLayout rootView;
     View animatedView;
     View mTouchView;
@@ -27,35 +27,36 @@ public class TapToMoveDemoFragment extends Fragment {
         mTouchView = rootView.findViewById(R.id.touch_view);
         animatedView = rootView.findViewById(R.id.animated_view);
 
-        rootView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
-                    AdditiveAnimator.cancelAnimations(mTouchView);
-                    mTouchView.setAlpha(1);
-                    mTouchView.setX(event.getX() - mTouchView.getWidth()/2);
-                    mTouchView.setY(event.getY() - mTouchView.getHeight()/2);
-                    if(AdditiveAnimationsShowcaseActivity.ADDITIVE_ANIMATIONS_ENABLED) {
-                        AdditiveAnimator.animate(animatedView)
-                                .centerX(event.getX())
-                                // uncomment the next line to see how you can use a different interpolator for each property!
-//                                .switchInterpolator(new BounceInterpolator())
-                                .centerY(event.getY())
-                                .start();
-
-                    } else {
-                        animatedView.animate().setInterpolator(EaseInOutPathInterpolator.create()).setDuration(1000)
-                                .x(event.getX() - animatedView.getWidth() / 2)
-                                .y(event.getY() - animatedView.getHeight() / 2)
-                                .start();
-                    }
-                }
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    AdditiveAnimator.animate(mTouchView, 100).alpha(0).start();
-                }
-                return true;
-            }
-        });
+        rootView.setOnTouchListener(this);
         return rootView;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN) {
+            AdditiveAnimator.cancelAnimations(mTouchView);
+            mTouchView.setAlpha(1);
+            mTouchView.setX(event.getX() - mTouchView.getWidth()/2);
+            mTouchView.setY(event.getY() - mTouchView.getHeight()/2);
+            if(AdditiveAnimationsShowcaseActivity.ADDITIVE_ANIMATIONS_ENABLED) {
+                AdditiveAnimator.animate(animatedView)
+                        .centerX(event.getX())
+                        // uncomment the next line to see how you can use a different interpolator for each property!
+//                                .switchInterpolator(new BounceInterpolator())
+                        .centerY(event.getY())
+                        .start();
+
+            } else {
+                animatedView.animate().setInterpolator(EaseInOutPathInterpolator.create()).setDuration(1000)
+                        .x(event.getX() - animatedView.getWidth() / 2)
+                        .y(event.getY() - animatedView.getHeight() / 2)
+                        .start();
+            }
+        }
+        if(event.getAction() == MotionEvent.ACTION_UP) {
+            AdditiveAnimator.animate(mTouchView, 100).alpha(0).start();
+        }
+        return true;
     }
 }

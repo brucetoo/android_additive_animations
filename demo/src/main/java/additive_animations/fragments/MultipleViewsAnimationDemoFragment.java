@@ -2,7 +2,6 @@ package additive_animations.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.graphics.Path;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,6 @@ import additive_animations.AdditiveAnimationsShowcaseActivity;
 import at.wirecube.additiveanimations.additive_animator.AdditiveAnimator;
 import at.wirecube.additiveanimations.additiveanimationsdemo.R;
 import at.wirecube.additiveanimations.helper.EaseInOutPathInterpolator;
-import at.wirecube.additiveanimations.helper.evaluators.PathEvaluator;
 
 public class MultipleViewsAnimationDemoFragment extends Fragment {
     FrameLayout rootView;
@@ -49,8 +47,10 @@ public class MultipleViewsAnimationDemoFragment extends Fragment {
 
         for(int i = 5; i < 25; i++) {
             View v = rootView.findViewById(R.id.animated_view4 + i - 4);
-            views.add(v);
-            v.setAlpha(0.2f);
+            if(v != null) {
+                views.add(v);
+                v.setAlpha(0.2f);
+            }
         }
 
         rootView.setOnTouchListener(new View.OnTouchListener() {
